@@ -25,7 +25,7 @@ if __name__ == "__main__":
     run_example("get_weather_alerts", {"location": "New York, NY"})
 
     # Google Weather Example
-    run_example("get_google_weather", {"query": "weather in London"})
+    run_example("get_google_weather_current_conditions", {"latitude": 37.4220, "longitude": -122.0841})
 
     # OpenWeatherMap Example
     run_example("get_openweathermap_weather", {"lat": 35, "lon": 139})

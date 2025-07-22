@@ -36,7 +36,7 @@ async def mcp_endpoint(request: MCPRequest):
             api_key = config.get("TOMORROW_IO_API_KEY")
             result = await getattr(tomorrow_io, request.tool)(**request.parameters, api_key=api_key)
         elif tool_config["module"] == "google_weather":
-            api_key = config.get("SERPAPI_API_KEY")
+            api_key = config.get("GOOGLE_WEATHER_API_KEY")
             result = await getattr(google_weather, request.tool)(**request.parameters, api_key=api_key)
         elif tool_config["module"] == "openweathermap":
             api_key = config.get("OPENWEATHERMAP_API_KEY")
