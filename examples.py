@@ -23,3 +23,13 @@ if __name__ == "__main__":
     # Note: These will fail if the TOMORROW_IO_API_KEY is not set in a .env file
     run_example("get_tomorrow_weather", {"location": "New York, NY"})
     run_example("get_weather_alerts", {"location": "New York, NY"})
+
+    # Google Weather Example
+    run_example("get_google_weather", {"query": "weather in London"})
+
+    # OpenWeatherMap Example
+    run_example("get_openweathermap_weather", {"lat": 35, "lon": 139})
+
+    # AccuWeather Example
+    # Note: This requires a location key. You can get one from the AccuWeather API.
+    run_example("get_accuweather_current_conditions", {"location_key": "349727"})

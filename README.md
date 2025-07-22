@@ -5,7 +5,7 @@ The MCP Weather Server is a comprehensive Model Context Protocol (MCP) compliant
 ## Key Features
 
 -   **Model Context Protocol (MCP) compliance** for seamless AI agent integration
--   **Dual API integration:** OpenMeteo (free) and Tomorrow.io (premium)
+-   **Multiple API integration:** OpenMeteo, Tomorrow.io, Google Weather (via SerpApi), OpenWeatherMap, and AccuWeather.
 -   **Comprehensive weather data:** current conditions, forecasts, historical data, and alerts
 -   **Robust error handling** and data validation
 -   **Configurable through environment variables**
