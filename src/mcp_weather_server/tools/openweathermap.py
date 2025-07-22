@@ -2,17 +2,16 @@ import os
 import httpx
 from fastapi import HTTPException
 
-API_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 
-async def get_openweathermap_weather(lat: float, lon: float):
-    if not API_KEY:
+async def get_openweathermap_weather(lat: float, lon: float, api_key: str):
+    if not api_key:
         raise HTTPException(status_code=500, detail="OpenWeatherMap API key not configured")
 
     params = {
         "lat": lat,
         "lon": lon,
-        "appid": API_KEY,
+        "appid": api_key,
     }
 
     async with httpx.AsyncClient() as client:

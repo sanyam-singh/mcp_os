@@ -2,17 +2,16 @@ import os
 import httpx
 from fastapi import HTTPException
 
-API_KEY = os.getenv("SERPAPI_API_KEY")
 BASE_URL = "https://serpapi.com/search"
 
-async def get_google_weather(query: str):
-    if not API_KEY:
+async def get_google_weather(query: str, api_key: str):
+    if not api_key:
         raise HTTPException(status_code=500, detail="SerpApi API key not configured")
 
     params = {
         "q": query,
         "engine": "google",
-        "api_key": API_KEY,
+        "api_key": api_key,
     }
 
     async with httpx.AsyncClient() as client:

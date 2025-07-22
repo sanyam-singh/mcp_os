@@ -2,12 +2,12 @@ import os
 import logging
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 from .tools import open_meteo, tomorrow_io, google_weather, openweathermap, accuweather
 from .utils.weather_utils import get_tool_config
 
-load_dotenv()
+config = dotenv_values(".env")
 
 # Configure logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
@@ -33,13 +33,17 @@ async def mcp_endpoint(request: MCPRequest):
         if tool_config["module"] == "open_meteo":
             result = await getattr(open_meteo, request.tool)(**request.parameters)
         elif tool_config["module"] == "tomorrow_io":
-            result = await getattr(tomorrow_io, request.tool)(**request.parameters)
+            api_key = config.get("TOMORROW_IO_API_KEY")
+            result = await getattr(tomorrow_io, request.tool)(**request.parameters, api_key=api_key)
         elif tool_config["module"] == "google_weather":
-            result = await getattr(google_weather, request.tool)(**request.parameters)
+            api_key = config.get("SERPAPI_API_KEY")
+            result = await getattr(google_weather, request.tool)(**request.parameters, api_key=api_key)
         elif tool_config["module"] == "openweathermap":
-            result = await getattr(openweathermap, request.tool)(**request.parameters)
+            api_key = config.get("OPENWEATHERMAP_API_KEY")
+            result = await getattr(openweathermap, request.tool)(**request.parameters, api_key=api_key)
         elif tool_config["module"] == "accuweather":
-            result = await getattr(accuweather, request.tool)(**request.parameters)
+            api_key = config.get("ACCUWEATHER_API_KEY")
+            result = await getattr(accuweather, request.tool)(**request.parameters, api_key=api_key)
         else:
             raise HTTPException(status_code=500, detail="Invalid tool module")
 
