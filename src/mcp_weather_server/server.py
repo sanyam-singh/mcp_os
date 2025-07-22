@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-from .tools import open_meteo, tomorrow_io
+from .tools import open_meteo, tomorrow_io, google_weather, openweathermap, accuweather
 from .utils.weather_utils import get_tool_config
 
 load_dotenv()
@@ -34,6 +34,12 @@ async def mcp_endpoint(request: MCPRequest):
             result = await getattr(open_meteo, request.tool)(**request.parameters)
         elif tool_config["module"] == "tomorrow_io":
             result = await getattr(tomorrow_io, request.tool)(**request.parameters)
+        elif tool_config["module"] == "google_weather":
+            result = await getattr(google_weather, request.tool)(**request.parameters)
+        elif tool_config["module"] == "openweathermap":
+            result = await getattr(openweathermap, request.tool)(**request.parameters)
+        elif tool_config["module"] == "accuweather":
+            result = await getattr(accuweather, request.tool)(**request.parameters)
         else:
             raise HTTPException(status_code=500, detail="Invalid tool module")
 
