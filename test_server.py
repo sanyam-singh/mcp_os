@@ -45,3 +45,30 @@ def test_tool_not_found():
     response = client.post("/mcp", json={"tool": "invalid_tool", "parameters": {}})
     assert response.status_code == 404
     assert response.json() == {"detail": "Tool not found"}
+
+def test_predict_weather_alert(monkeypatch):
+    class MockChoice:
+        def __init__(self, content):
+            self.message = self
+            self.content = content
+
+    class MockCompletion:
+        def __init__(self, content):
+            self.choices = [MockChoice(content)]
+
+    def mock_create(*args, **kwargs):
+        return MockCompletion("Sunny with a chance of meatballs.")
+
+    monkeypatch.setattr("openai.resources.chat.completions.Completions.create", mock_create)
+    monkeypatch.setenv("OPENAI_API_KEY", "test_key")
+    response = client.post("/mcp", json={
+        "tool": "predict_weather_alert",
+        "parameters": {
+            "latitude": 40.7128,
+            "longitude": -74.0060,
+            "crops": ["wheat", "corn"]
+        }
+    })
+    assert response.status_code == 200
+    assert "alert" in response.json()
+    assert response.json()["alert"] == "Sunny with a chance of meatballs."

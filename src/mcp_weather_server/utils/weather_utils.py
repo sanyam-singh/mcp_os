@@ -7,6 +7,7 @@ TOOL_CONFIG = {
     "get_google_weather_current_conditions": {"module": "google_weather"},
     "get_openweathermap_weather": {"module": "openweathermap"},
     "get_accuweather_current_conditions": {"module": "accuweather"},
+    "predict_weather_alert": {"module": "openai_llm"},
 }
 
 def get_tool_config(tool_name: str):
