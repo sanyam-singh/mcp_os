@@ -45,7 +45,8 @@ async def mcp_endpoint(request: MCPRequest):
             api_key = config.get("ACCUWEATHER_API_KEY")
             result = await getattr(accuweather, request.tool)(**request.parameters, api_key=api_key)
         elif tool_config["module"] == "openai_llm":
-            result = await getattr(openai_llm, request.tool)(**request.parameters)
+            api_key = config.get("OPENAI_API_KEY")
+            result = await getattr(openai_llm, request.tool)(**request.parameters, api_key=api_key)
         else:
             raise HTTPException(status_code=500, detail="Invalid tool module")
 
