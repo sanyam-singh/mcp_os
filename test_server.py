@@ -4,7 +4,11 @@ from src.mcp_weather_server.server import app
 
 client = TestClient(app)
 
-def test_get_weather_forecast():
+def test_get_weather_forecast(monkeypatch):
+    async def mock_get_weather_forecast(*args, **kwargs):
+        return {"daily": "mocked_forecast"}
+
+    monkeypatch.setattr("src.mcp_weather_server.tools.open_meteo.get_weather_forecast", mock_get_weather_forecast)
     response = client.post("/mcp", json={
         "tool": "get_weather_forecast",
         "parameters": {
@@ -17,7 +21,11 @@ def test_get_weather_forecast():
     assert response.status_code == 200
     assert "daily" in response.json()
 
-def test_get_current_weather():
+def test_get_current_weather(monkeypatch):
+    async def mock_get_current_weather(*args, **kwargs):
+        return {"current_weather": "mocked_weather"}
+
+    monkeypatch.setattr("src.mcp_weather_server.tools.open_meteo.get_current_weather", mock_get_current_weather)
     response = client.post("/mcp", json={
         "tool": "get_current_weather",
         "parameters": {
@@ -28,7 +36,11 @@ def test_get_current_weather():
     assert response.status_code == 200
     assert "current_weather" in response.json()
 
-def test_get_historical_weather():
+def test_get_historical_weather(monkeypatch):
+    async def mock_get_historical_weather(*args, **kwargs):
+        return {"daily": "mocked_historical"}
+
+    monkeypatch.setattr("src.mcp_weather_server.tools.open_meteo.get_historical_weather", mock_get_historical_weather)
     response = client.post("/mcp", json={
         "tool": "get_historical_weather",
         "parameters": {
@@ -59,6 +71,10 @@ def test_predict_weather_alert(monkeypatch):
     def mock_create(*args, **kwargs):
         return MockCompletion("Sunny with a chance of meatballs.")
 
+    async def mock_get_weather_forecast(*args, **kwargs):
+        return {"daily": "mocked_forecast"}
+
+    monkeypatch.setattr("src.mcp_weather_server.tools.open_meteo.get_weather_forecast", mock_get_weather_forecast)
     monkeypatch.setattr("openai.resources.chat.completions.Completions.create", mock_create)
     monkeypatch.setenv("OPENAI_API_KEY", "test_key")
     response = client.post("/mcp", json={

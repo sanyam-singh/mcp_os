@@ -27,10 +27,14 @@ async def predict_weather_alert(latitude: float, longitude: float, crops: list[s
         Given the following weather data for a location:
         {weather_data}
 
-        And the following crops being grown in the area:
-        {crop_list}
-
         Please predict any potential weather alerts for these crops in the next 7 days.
+        For the given region, consider what crops are possible to grow and their sensitivity to weather conditions.
+        Include the following details in your response:
+        - Expected weather conditions (e.g., temperature, precipitation, wind speed)
+        - Potential weather alerts (e.g., frost, drought, heavy rainfall)
+        - Impact on crops (e.g., growth, yield, disease risk)
+        - Recommended actions for farmers (e.g., irrigation, protection measures)
+        - Any other relevant information that could help farmers prepare for the weather conditions.
         Provide a summary of the potential impact on the crops and any recommended actions.
         """
 
