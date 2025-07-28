@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from dotenv import dotenv_values
 
 from .tools import open_meteo, tomorrow_io, google_weather, openweathermap, accuweather, openai_llm, geographic_tools, crop_calendar_tools, alert_generation_tools
+from .a2a_agents import sms_agent, whatsapp_agent, ussd_agent, ivr_agent, telegram_agent
 from .utils.weather_utils import get_tool_config
 
 config = dotenv_values(".env")
@@ -19,6 +20,9 @@ app = FastAPI()
 class MCPRequest(BaseModel):
     tool: str
     parameters: dict
+
+class AlertRequest(BaseModel):
+    alert_json: dict
 
 @app.post("/mcp")
 async def mcp_endpoint(request: MCPRequest):
@@ -62,6 +66,26 @@ async def mcp_endpoint(request: MCPRequest):
     except Exception as e:
         logger.exception(f"Error executing tool: {request.tool}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/a2a/sms")
+async def a2a_sms_endpoint(request: AlertRequest):
+    return {"message": sms_agent.create_sms_message(request.alert_json)}
+
+@app.post("/a2a/whatsapp")
+async def a2a_whatsapp_endpoint(request: AlertRequest):
+    return whatsapp_agent.create_whatsapp_message(request.alert_json)
+
+@app.post("/a2a/ussd")
+async def a2a_ussd_endpoint(request: AlertRequest):
+    return {"menu": ussd_agent.create_ussd_menu(request.alert_json)}
+
+@app.post("/a2a/ivr")
+async def a2a_ivr_endpoint(request: AlertRequest):
+    return {"script": ivr_agent.create_ivr_script(request.alert_json)}
+
+@app.post("/a2a/telegram")
+async def a2a_telegram_endpoint(request: AlertRequest):
+    return telegram_agent.create_telegram_message(request.alert_json)
 
 if __name__ == "__main__":
     import uvicorn
