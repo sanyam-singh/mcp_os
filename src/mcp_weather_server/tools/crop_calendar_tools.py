@@ -179,6 +179,7 @@ CROP_CALENDAR = {
 
 
 from datetime import date
+from .geographic_tools import BIHAR_DATA
 
 async def get_crop_calendar(region: str, crop_type: str = None):
     if region.lower() == 'bihar':
@@ -190,7 +191,7 @@ async def get_crop_calendar(region: str, crop_type: str = None):
                 return {"error": "Crop not found in Bihar"}
         return {
             "crops": list(CROP_CALENDAR.keys()),
-            "districts": BIHAR_DISTRICTS
+            "districts": list(BIHAR_DATA.keys())
         }
     return {"error": "Region not found"}
 
