@@ -79,4 +79,8 @@ async def main():
         print("-----------------------------")
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     asyncio.run(main())
+=======
+    asyncio.run(main())
+>>>>>>> mcp-weather-server
