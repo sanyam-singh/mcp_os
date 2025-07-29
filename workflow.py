@@ -33,7 +33,7 @@ class DailyAlertWorkflow:
             season = self.crop_agent.get_current_season()
             # These dates are for demonstration. In a real scenario, you'd have a way
             # to determine the actual planting dates for each location.
-            plant_date = "2023-11-01"
+            plant_date = "2024-11-01"
             current_date = datetime.datetime.now().strftime("%Y-%m-%d")
 
             crop_info_list = await self.crop_agent.get_crop_info(self.state, season, plant_date, current_date)
