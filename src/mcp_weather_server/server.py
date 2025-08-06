@@ -26,7 +26,7 @@ app = FastAPI()
 # CORS middleware for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "https://mcp-ui.vercel.app/"],
+    allow_origins=["https://mcp-ui.vercel.app"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
@@ -545,6 +545,35 @@ async def a2a_ivr_endpoint(request: AlertRequest):
 @app.post("/a2a/telegram")
 async def a2a_telegram_endpoint(request: AlertRequest):
     return telegram_agent.create_telegram_message(request.alert_json)
+
+
+# for smithery + context7
+
+@app.post("/mcp")
+async def mcp_rpc_handler(request: dict):
+    method = request.get("method")
+    params = request.get("params", {})
+    tool_name = params.get("tool_name")
+    arguments = params.get("arguments", {})
+    req_id = request.get("id")
+
+    # Handle run_workflow tool
+    if method == "call_tool" and tool_name == "run_workflow":
+        state = arguments.get("state")
+        district = arguments.get("district")
+        result = await run_workflow(WorkflowRequest(state=state, district=district))
+        return {"jsonrpc": "2.0", "result": result, "id": req_id}
+
+    # Handle other tools dynamically via your tool config
+    if method == "call_tool":
+        try:
+            result = await mcp_endpoint(MCPRequest(tool=tool_name, parameters=arguments))
+            return {"jsonrpc": "2.0", "result": result, "id": req_id}
+        except Exception as e:
+            return {"jsonrpc": "2.0", "error": {"code": -32000, "message": str(e)}, "id": req_id}
+
+    return {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Unknown method"}, "id": req_id}
+
 
 if __name__ == "__main__":
     import uvicorn
